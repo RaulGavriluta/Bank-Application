@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankApp.Migrations
 {
     [DbContext(typeof(BankAppDbContext))]
-    [Migration("20250812132321_initial")]
+    [Migration("20250814142150_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -86,11 +86,11 @@ namespace BankApp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordSalt")
+                    b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

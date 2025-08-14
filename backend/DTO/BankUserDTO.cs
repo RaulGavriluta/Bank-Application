@@ -1,16 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BankApp.Models
+namespace BankApp.DTO
 {
-    public class BankUser
+    public class BankUserDTO
     {
-        public int BankUserId { get; set; }
+
         [Required]
-        [StringLength(50)]
         public string Name { get; set; }
+
         [Required]
         [EmailAddress]
-        [StringLength(100)]
         public string Email { get; set; }
 
         [Required]
@@ -19,9 +18,6 @@ namespace BankApp.Models
 
         [Required]
         public string Password { get; set; }
-      
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public bool IsActive { get; set; } = true;
-        public List<Account> Accounts { get; set; } = new List<Account>();
+
     }
 }

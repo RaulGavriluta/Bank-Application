@@ -11,6 +11,8 @@ namespace BankApp.Data
         public DbSet<BankUser> BankUsers { get; set; } = null!;
         public DbSet<Account> Accounts { get; set; } = null!;
         public DbSet<Transaction> Transactions { get; set; } = null!;
+        public DbSet<AccountType> AccountTypes { get; set; } = null!;
+        public DbSet<TransactionType> TransactionTypes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,6 +37,30 @@ namespace BankApp.Data
             modelBuilder.Entity<Transaction>()
                 .Property(t => t.Amount)
                 .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<AccountType>()
+                .HasMany(a => a.Accounts)
+                .WithOne(a => a.Type)
+                .HasForeignKey(a => a.AccountTypeId);
+
+            modelBuilder.Entity<TransactionType>()
+                .HasMany(t => t.Transactions)
+                .WithOne(t => t.Type)
+                .HasForeignKey(t => t.TransactionTypeId);
+
+            // Account Types
+            modelBuilder.Entity<AccountType>().HasData(
+                new AccountType { AccountTypeId = 1, Name = "Checking" },
+                new AccountType { AccountTypeId = 2, Name = "Savings" },
+                new AccountType { AccountTypeId = 3, Name = "Investment" }
+            );
+
+            // Transaction Types
+            modelBuilder.Entity<TransactionType>().HasData(
+                new TransactionType { TransactionTypeId = 1, Name = "Deposit" },
+                new TransactionType { TransactionTypeId = 2, Name = "Withdrawal" },
+                new TransactionType { TransactionTypeId = 3, Name = "Transfer" }
+            );
         }
 
     }

@@ -1,4 +1,5 @@
 ﻿using BankApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace BankApp.Data
 {

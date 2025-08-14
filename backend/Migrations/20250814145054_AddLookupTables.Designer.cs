@@ -4,6 +4,7 @@ using BankApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankApp.Migrations
 {
     [DbContext(typeof(BankAppDbContext))]
-    partial class BankAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250814145054_AddLookupTables")]
+    partial class AddLookupTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,23 +82,6 @@ namespace BankApp.Migrations
                     b.HasKey("AccountTypeId");
 
                     b.ToTable("AccountTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            AccountTypeId = 1,
-                            Name = "Checking"
-                        },
-                        new
-                        {
-                            AccountTypeId = 2,
-                            Name = "Savings"
-                        },
-                        new
-                        {
-                            AccountTypeId = 3,
-                            Name = "Investment"
-                        });
                 });
 
             modelBuilder.Entity("BankApp.Models.BankUser", b =>
@@ -193,23 +179,6 @@ namespace BankApp.Migrations
                     b.HasKey("TransactionTypeId");
 
                     b.ToTable("TransactionTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            TransactionTypeId = 1,
-                            Name = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionTypeId = 2,
-                            Name = "Withdrawal"
-                        },
-                        new
-                        {
-                            TransactionTypeId = 3,
-                            Name = "Transfer"
-                        });
                 });
 
             modelBuilder.Entity("BankApp.Models.Account", b =>

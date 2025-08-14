@@ -7,12 +7,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BankAppDbContext>(options => 
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<BankUserDataOps>();
+builder.Services.AddScoped<AccountDataOps>();
+builder.Services.AddScoped<TransactionDataOps>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseRouting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

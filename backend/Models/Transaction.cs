@@ -2,12 +2,7 @@
 
 namespace BankApp.Models
 {
-    public enum TransactionType
-    {
-        Transfer = 1,
-        Deposit = 2,
-        Withdrawal = 3
-    }
+    
     public class Transaction
     {
         public int TransactionId { get; set; }
@@ -24,9 +19,11 @@ namespace BankApp.Models
         [Required]
         public int ToAccountId{ get; set; }
         public Account ToAccount { get; set; }
+
+        public int TransactionTypeId { get; set; }
+        public TransactionType Type { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [Required]
-        public TransactionType Type { get; set; } // "Transfer", "Deposit" , "Withdrawal"
+
         [Required]
         public string Status { get; set; } = "Pending";
     }

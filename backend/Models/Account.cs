@@ -18,7 +18,13 @@ namespace BankApp.Models
         [Required]
         [StringLength(3, MinimumLength = 3)]
         public string Currency { get; set; }
+
+        public int AccountTypeId { get; set; }
+
+        public AccountType Type { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
         public bool IsDeleted { get; set; } = false;
     }
 }
