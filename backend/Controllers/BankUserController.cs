@@ -48,7 +48,6 @@ namespace BankApp.Controllers
                     BankUserName = a.User?.Name ?? "",
                     Balance = a.Balance,
                     IsActive = a.IsActive
-                   
                 }).ToList()
             };
 
