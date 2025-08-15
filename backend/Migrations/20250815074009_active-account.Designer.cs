@@ -4,6 +4,7 @@ using BankApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankApp.Migrations
 {
     [DbContext(typeof(BankAppDbContext))]
-    partial class BankAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250815074009_active-account")]
+    partial class activeaccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,7 +75,7 @@ namespace BankApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountTypeId"));
 
-                    b.Property<string>("AccountName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -84,17 +87,17 @@ namespace BankApp.Migrations
                         new
                         {
                             AccountTypeId = 1,
-                            AccountName = "Deposit"
+                            Name = "Checking"
                         },
                         new
                         {
                             AccountTypeId = 2,
-                            AccountName = "Savings"
+                            Name = "Savings"
                         },
                         new
                         {
                             AccountTypeId = 3,
-                            AccountName = "Investment"
+                            Name = "Investment"
                         });
                 });
 

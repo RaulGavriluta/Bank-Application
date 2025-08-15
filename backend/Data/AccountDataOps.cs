@@ -13,7 +13,7 @@ namespace BankApp.Data
 
         public async Task<Account[]> GetAccountsAsync()
         {
-            return await dbContext.Accounts.Include(u => u.User).ToArrayAsync();
+            return await dbContext.Accounts.Include(u => u.User).Include(u => u.Type).ToArrayAsync();
         }
 
         public async Task<Account?> GetAccountByIdAsync(int id)

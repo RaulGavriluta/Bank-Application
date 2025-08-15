@@ -50,10 +50,11 @@ namespace BankApp.Data
 
             // Account Types
             modelBuilder.Entity<AccountType>().HasData(
-                new AccountType { AccountTypeId = 1, Name = "Checking" },
-                new AccountType { AccountTypeId = 2, Name = "Savings" },
-                new AccountType { AccountTypeId = 3, Name = "Investment" }
+                new AccountType { AccountTypeId = 1, AccountName = "Deposit" },
+                new AccountType { AccountTypeId = 2, AccountName = "Savings" },
+                new AccountType { AccountTypeId = 3, AccountName = "Investment" }
             );
+
 
             // Transaction Types
             modelBuilder.Entity<TransactionType>().HasData(

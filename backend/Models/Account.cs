@@ -25,6 +25,6 @@ namespace BankApp.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public bool IsDeleted { get; set; } = false;
+        public bool IsActive { get; set; } = true;
     }
 }

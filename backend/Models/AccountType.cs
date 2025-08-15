@@ -4,7 +4,7 @@
     {
         public int AccountTypeId { get; set; }
 
-        public string Name { get; set; }
+        public string AccountName { get; set; }
 
         public ICollection<Account> Accounts { get; set; }
     }
