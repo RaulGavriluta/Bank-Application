@@ -2,15 +2,16 @@
 using BankApp.DTO;
 using Microsoft.AspNetCore.Mvc;
 using BankApp.Models;
+using BankApp.Interfaces;
 namespace BankApp.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class BankUserController : ControllerBase
     {
-        private readonly BankUserDataOps _bankUserDataOps;
+        private readonly IBankUserDataOps _bankUserDataOps;
 
-        public BankUserController(BankUserDataOps bankUserDataOps)
+        public BankUserController(IBankUserDataOps bankUserDataOps)
         {
             _bankUserDataOps = bankUserDataOps;
         }
