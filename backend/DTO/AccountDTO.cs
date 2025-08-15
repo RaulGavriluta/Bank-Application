@@ -15,6 +15,10 @@ namespace BankApp.DTO
 
         public string AccountTypeName{ get; set; }
 
+        public decimal Balance { get; set; }
+
+        public bool IsActive { get; set; }
+
         public int BankUserId { get; set; }
 
         public string BankUserName { get; set; }

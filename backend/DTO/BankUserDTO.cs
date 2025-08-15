@@ -4,6 +4,8 @@ namespace BankApp.DTO
 {
     public class BankUserDTO
     {
+        public int BankUserId { get; set; }
+
 
         [Required]
         public string Name { get; set; }
@@ -18,6 +20,8 @@ namespace BankApp.DTO
 
         [Required]
         public string Password { get; set; }
+
+        public List<AccountDTO> Accounts { get; set; }
 
     }
 }

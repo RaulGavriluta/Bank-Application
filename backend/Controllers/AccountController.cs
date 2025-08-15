@@ -30,6 +30,8 @@ namespace BankApp.Controllers
                 AccountTypeName = a.Type?.AccountName ?? "",
                 BankUserId = a.UserId,
                 BankUserName = a.User?.Name ?? "",
+                Balance = a.Balance,
+                IsActive = a.IsActive
             }).ToList();
             return Ok(accountDTOs);
         }
@@ -48,9 +50,11 @@ namespace BankApp.Controllers
                 IBAN = account.IBAN,
                 Currency = account.Currency,
                 AccountTypeId = account.AccountTypeId,
-                AccountTypeName = account.Type.AccountName,
+                AccountTypeName = account.Type?.AccountName,
                 BankUserId = account.UserId,
-                BankUserName = account.User?.Name ?? "",
+                BankUserName = account.User?.Name,
+                Balance = account.Balance,
+                IsActive = account.IsActive
             };
             return Ok(dto);
         }
@@ -78,6 +82,8 @@ namespace BankApp.Controllers
                 AccountTypeName = account.Type?.AccountName ?? "",
                 BankUserId = account.UserId,
                 BankUserName = account.User?.Name ?? "",
+                Balance = account.Balance,
+                IsActive = account.IsActive
             };
             return Ok(resultDto);
         }
@@ -94,11 +100,13 @@ namespace BankApp.Controllers
             {
                 return NotFound();
             }
+
             account.Currency = dto.Currency;
             account.UserId = dto.BankUserId;
             account.IsActive = dto.IsActive;
             account.AccountTypeId = dto.AccountTypeId;
             await _accountDataOps.UpdateAccountAsync(account);
+
             var resultDto = new AccountUpdateDTO
             {
                 AccountId = account.AccountId,
@@ -106,7 +114,7 @@ namespace BankApp.Controllers
                 AccountTypeId = account.AccountTypeId,
                 AccountTypeName = account.Type?.AccountName ?? "",
                 BankUserId = account.UserId,
-                IsActive = account.IsActive,
+                IsActive = account.IsActive
             };
             return Ok(resultDto);
         }

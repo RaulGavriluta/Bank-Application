@@ -18,7 +18,7 @@ namespace BankApp.Data
 
         public async Task<Account?> GetAccountByIdAsync(int id)
         {
-            return await dbContext.Accounts.FirstOrDefaultAsync(u => u.AccountId == id);
+            return await dbContext.Accounts.Include(u => u.User).Include(a => a.Type).FirstOrDefaultAsync(u => u.AccountId == id);
         }
 
         public async Task AddAccountAsync(Account account)

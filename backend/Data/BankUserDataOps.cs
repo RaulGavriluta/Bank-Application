@@ -1,4 +1,5 @@
-﻿using BankApp.Models;
+﻿using BankApp.DTO;
+using BankApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace BankApp.Data
@@ -12,15 +13,43 @@ namespace BankApp.Data
             dbContext = context;
         }
 
-        public async Task<BankUser[]> GetBankUsersAsync()
+        public async Task<BankUserDTO[]> GetBankUsersAsync()
         {
-            return await dbContext.BankUsers.Include(u => u.Accounts).ToArrayAsync();
+            var users = await dbContext.BankUsers
+            .Include(u => u.Accounts)
+                .ThenInclude(a => a.Type)
+            .ToArrayAsync();
+
+            var dtos = users.Select(u => new BankUserDTO
+            {
+                BankUserId = u.BankUserId,
+                Name = u.Name,
+                Email = u.Email,
+                Phone = u.Phone,
+                Password = u.Password,
+                Accounts = u.Accounts.Select(a => new AccountDTO
+                {
+                    AccountId = a.AccountId,
+                    IBAN = a.IBAN,
+                    Currency = a.Currency,
+                    AccountTypeId = a.AccountTypeId,
+                    AccountTypeName = a.Type?.AccountName ?? "",
+                    BankUserId = a.UserId,
+                    BankUserName = a.User?.Name
+                }).ToList()
+            }).ToArray();
+
+            return dtos;
         }
 
         public async Task<BankUser?> GetBankUserByIdAsync(int id)
         {
-            return await dbContext.BankUsers.FirstOrDefaultAsync(u => u.BankUserId == id);
+            return await dbContext.BankUsers
+                .Include(u => u.Accounts)
+                    .ThenInclude(a => a.Type)   
+                .FirstOrDefaultAsync(u => u.BankUserId == id);
         }
+
 
         public async Task AddBankUserAsync(BankUser user)
         {
