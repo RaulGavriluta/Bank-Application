@@ -1,6 +1,4 @@
 using Moq;
-using NUnit.Framework;
-using BankApp.Data;
 using BankApp.Interfaces;
 using BankApp.Controllers;
 using Microsoft.AspNetCore.Mvc;

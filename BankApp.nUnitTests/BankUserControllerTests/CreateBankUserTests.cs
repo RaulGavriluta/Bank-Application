@@ -1,18 +1,17 @@
 ﻿using BankApp.Controllers;
+using BankApp.DTO;
 using BankApp.Interfaces;
+using BankApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using BankApp.DTO;
-
 namespace BankApp.nUnitTests;
 
-public class GetAllBankUsersTests
+public class CreateBankUserTests
 {
     private Mock<IBankUserDataOps> _bankUserDataOpsMock;
     private BankUserController _bankUserController;
 
     [SetUp]
-
     public void Setup()
     {
         _bankUserDataOpsMock = new Mock<IBankUserDataOps>();
@@ -20,21 +19,23 @@ public class GetAllBankUsersTests
     }
 
     [Test]
-    public async Task GetAllBankUsers_ReturnsOk()
+    public async Task CreateBankUser_ValidDTO_ReturnsOk()
     {
-        //Arrange
-        var users = new BankUserDTO[]
+        //Assign
+        var dto = new BankUserDTO
         {
-            new BankUserDTO { 
-                BankUserId = 1, 
-                Name ="John Doe", 
-                Email = "johndoe@example.com", 
-                Password = "parola123", 
-                Phone = "0722222222" }
+            BankUserId = 1,
+            Name = "John Doe",
+            Email = "johndoe@gmail.com",
+            Password = "password",
+            Phone = "0711111111"
         };
-        _bankUserDataOpsMock.Setup(s => s.GetBankUsersAsync()).ReturnsAsync(users);
+
+        _bankUserDataOpsMock.Setup(s => s.AddBankUserAsync(It.IsAny<BankUser>())).Returns(Task.CompletedTask);
+
         //Act
-        var result = await _bankUserController.GetAllBankUsers();
+        var result = await _bankUserController.CreateBankUser(dto);
+
         //Assert
         Assert.IsInstanceOf<OkObjectResult>(result);
     }
