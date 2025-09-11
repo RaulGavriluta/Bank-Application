@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BankApp.Migrations
 {
     [DbContext(typeof(BankAppDbContext))]
-    [Migration("20250814142150_initial")]
+    [Migration("20250911122943_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -33,6 +33,9 @@ namespace BankApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"));
 
+                    b.Property<int>("AccountTypeId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
@@ -49,7 +52,7 @@ namespace BankApp.Migrations
                         .HasMaxLength(34)
                         .HasColumnType("nvarchar(34)");
 
-                    b.Property<bool>("IsDeleted")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<int>("UserId")
@@ -57,9 +60,45 @@ namespace BankApp.Migrations
 
                     b.HasKey("AccountId");
 
+                    b.HasIndex("AccountTypeId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("BankApp.Models.AccountType", b =>
+                {
+                    b.Property<int>("AccountTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountTypeId"));
+
+                    b.Property<string>("AccountName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AccountTypeId");
+
+                    b.ToTable("AccountTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountTypeId = 1,
+                            AccountName = "Deposit"
+                        },
+                        new
+                        {
+                            AccountTypeId = 2,
+                            AccountName = "Savings"
+                        },
+                        new
+                        {
+                            AccountTypeId = 3,
+                            AccountName = "Investment"
+                        });
                 });
 
             modelBuilder.Entity("BankApp.Models.BankUser", b =>
@@ -128,7 +167,7 @@ namespace BankApp.Migrations
                     b.Property<int>("ToAccountId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Type")
+                    b.Property<int>("TransactionTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("TransactionId");
@@ -137,16 +176,60 @@ namespace BankApp.Migrations
 
                     b.HasIndex("ToAccountId");
 
+                    b.HasIndex("TransactionTypeId");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("BankApp.Models.TransactionType", b =>
+                {
+                    b.Property<int>("TransactionTypeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionTypeId"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("TransactionTypeId");
+
+                    b.ToTable("TransactionTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            TransactionTypeId = 1,
+                            Name = "Deposit"
+                        },
+                        new
+                        {
+                            TransactionTypeId = 2,
+                            Name = "Withdrawal"
+                        },
+                        new
+                        {
+                            TransactionTypeId = 3,
+                            Name = "Transfer"
+                        });
                 });
 
             modelBuilder.Entity("BankApp.Models.Account", b =>
                 {
+                    b.HasOne("BankApp.Models.AccountType", "Type")
+                        .WithMany("Accounts")
+                        .HasForeignKey("AccountTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BankApp.Models.BankUser", "User")
                         .WithMany("Accounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Type");
 
                     b.Navigation("User");
                 });
@@ -165,14 +248,32 @@ namespace BankApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("BankApp.Models.TransactionType", "Type")
+                        .WithMany("Transactions")
+                        .HasForeignKey("TransactionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("FromAccount");
 
                     b.Navigation("ToAccount");
+
+                    b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("BankApp.Models.AccountType", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 
             modelBuilder.Entity("BankApp.Models.BankUser", b =>
                 {
                     b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("BankApp.Models.TransactionType", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

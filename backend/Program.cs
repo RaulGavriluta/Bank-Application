@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using BankApp.Data;
+using BankApp.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<BankAppDbContext>(options => 
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<BankUserDataOps>();
+builder.Services.AddScoped<IBankUserDataOps, BankUserDataOps>();
 builder.Services.AddScoped<AccountDataOps>();
 builder.Services.AddScoped<TransactionDataOps>();
 
@@ -32,6 +33,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<BankAppDbContext>();
+    db.Database.Migrate(); 
 }
 
 app.UseHttpsRedirection();

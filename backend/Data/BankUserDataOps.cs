@@ -1,10 +1,11 @@
 ﻿using BankApp.DTO;
+using BankApp.Interfaces;
 using BankApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 namespace BankApp.Data
 {
-    public class BankUserDataOps
+    public class BankUserDataOps : IBankUserDataOps
     {
         private readonly BankAppDbContext dbContext;
 
