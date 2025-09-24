@@ -9,8 +9,8 @@ builder.Services.AddDbContext<BankAppDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IBankUserDataOps, BankUserDataOps>();
-builder.Services.AddScoped<AccountDataOps>();
-builder.Services.AddScoped<TransactionDataOps>();
+builder.Services.AddScoped<IAccountDataOps, AccountDataOps>();
+builder.Services.AddScoped<ITransactionDataOps, TransactionDataOps>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(opt =>

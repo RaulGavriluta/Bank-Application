@@ -45,19 +45,6 @@ namespace BankApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransactionTypes",
-                columns: table => new
-                {
-                    TransactionTypeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransactionTypes", x => x.TransactionTypeId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Accounts",
                 columns: table => new
                 {
@@ -98,9 +85,7 @@ namespace BankApp.Migrations
                     Currency = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
                     FromAccountId = table.Column<int>(type: "int", nullable: false),
                     ToAccountId = table.Column<int>(type: "int", nullable: false),
-                    TransactionTypeId = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -117,12 +102,6 @@ namespace BankApp.Migrations
                         principalTable: "Accounts",
                         principalColumn: "AccountId",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_TransactionTypes_TransactionTypeId",
-                        column: x => x.TransactionTypeId,
-                        principalTable: "TransactionTypes",
-                        principalColumn: "TransactionTypeId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -133,16 +112,6 @@ namespace BankApp.Migrations
                     { 1, "Deposit" },
                     { 2, "Savings" },
                     { 3, "Investment" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "TransactionTypes",
-                columns: new[] { "TransactionTypeId", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Deposit" },
-                    { 2, "Withdrawal" },
-                    { 3, "Transfer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -164,11 +133,6 @@ namespace BankApp.Migrations
                 name: "IX_Transactions_ToAccountId",
                 table: "Transactions",
                 column: "ToAccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TransactionTypeId",
-                table: "Transactions",
-                column: "TransactionTypeId");
         }
 
         /// <inheritdoc />
@@ -179,9 +143,6 @@ namespace BankApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Accounts");
-
-            migrationBuilder.DropTable(
-                name: "TransactionTypes");
 
             migrationBuilder.DropTable(
                 name: "AccountTypes");

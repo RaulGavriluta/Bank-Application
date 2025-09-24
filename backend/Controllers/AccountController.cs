@@ -2,6 +2,7 @@
 using BankApp.Data;
 using BankApp.DTO;
 using BankApp.Models;
+using BankApp.Interfaces;
 using BankApp.Services;
 
 namespace BankApp.Controllers
@@ -10,9 +11,9 @@ namespace BankApp.Controllers
     [Route("api/[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly AccountDataOps _accountDataOps;
+        private readonly IAccountDataOps _accountDataOps;
 
-        public AccountController(AccountDataOps accountDataOps)
+        public AccountController(IAccountDataOps accountDataOps)
         {
             _accountDataOps = accountDataOps;
         }

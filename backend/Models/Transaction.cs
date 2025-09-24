@@ -19,12 +19,6 @@ namespace BankApp.Models
         [Required]
         public int ToAccountId{ get; set; }
         public Account ToAccount { get; set; }
-
-        public int TransactionTypeId { get; set; }
-        public TransactionType Type { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        [Required]
-        public string Status { get; set; } = "Pending";
     }
 }

@@ -1,8 +1,9 @@
 ﻿using BankApp.Models;
+using BankApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace BankApp.Data
 {
-    public class AccountDataOps
+    public class AccountDataOps : IAccountDataOps
     {
         private readonly BankAppDbContext dbContext;
 

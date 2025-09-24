@@ -157,14 +157,7 @@ namespace BankApp.Migrations
                     b.Property<int>("FromAccountId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("ToAccountId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TransactionTypeId")
                         .HasColumnType("int");
 
                     b.HasKey("TransactionId");
@@ -173,43 +166,7 @@ namespace BankApp.Migrations
 
                     b.HasIndex("ToAccountId");
 
-                    b.HasIndex("TransactionTypeId");
-
                     b.ToTable("Transactions");
-                });
-
-            modelBuilder.Entity("BankApp.Models.TransactionType", b =>
-                {
-                    b.Property<int>("TransactionTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionTypeId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TransactionTypeId");
-
-                    b.ToTable("TransactionTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            TransactionTypeId = 1,
-                            Name = "Deposit"
-                        },
-                        new
-                        {
-                            TransactionTypeId = 2,
-                            Name = "Withdrawal"
-                        },
-                        new
-                        {
-                            TransactionTypeId = 3,
-                            Name = "Transfer"
-                        });
                 });
 
             modelBuilder.Entity("BankApp.Models.Account", b =>
@@ -245,17 +202,9 @@ namespace BankApp.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("BankApp.Models.TransactionType", "Type")
-                        .WithMany("Transactions")
-                        .HasForeignKey("TransactionTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("FromAccount");
 
                     b.Navigation("ToAccount");
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("BankApp.Models.AccountType", b =>
@@ -266,11 +215,6 @@ namespace BankApp.Migrations
             modelBuilder.Entity("BankApp.Models.BankUser", b =>
                 {
                     b.Navigation("Accounts");
-                });
-
-            modelBuilder.Entity("BankApp.Models.TransactionType", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

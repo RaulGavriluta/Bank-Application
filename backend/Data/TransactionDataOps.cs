@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BankApp.DTO;
+using BankApp.Interfaces;
 using BankApp.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+
 namespace BankApp.Data
 {
-    public class TransactionDataOps
+    public class TransactionDataOps : ITransactionDataOps
     {
         private readonly BankAppDbContext dbContext;
 
@@ -11,22 +15,16 @@ namespace BankApp.Data
             dbContext = context;
         }
 
-        public async Task<Transaction[]> GetTransactionsAsync()
-        {
-            return await dbContext.Transactions
-                .Include(t => t.FromAccount)
-                .Include(t => t.ToAccount)
-                .ToArrayAsync();
-        }
-
+        // Returnează o tranzacție după ID
         public async Task<Transaction?> GetTransactionByIdAsync(int id)
         {
             return await dbContext.Transactions
                 .Include(t => t.FromAccount)
                 .Include(t => t.ToAccount)
-                .FirstOrDefaultAsync(u => u.TransactionId == id);
+                .FirstOrDefaultAsync(t => t.TransactionId == id);
         }
 
+        // Returnează toate tranzacțiile asociate unui cont (from sau to)
         public async Task<Transaction[]> GetTransactionByAccountIdAsync(int accountId)
         {
             return await dbContext.Transactions
@@ -36,22 +34,34 @@ namespace BankApp.Data
                 .ToArrayAsync();
         }
 
-        public async Task<Transaction[]> GetTransactionByUserIdAsync(int userId)
+        // Creează o tranzacție folosind doar IBAN-uri
+        public async Task<Transaction?> CreateTransactionAsync(TransactionDTO dto)
         {
-            return await dbContext.Transactions
-                .Include(t => t.FromAccount)
-                .Include(t => t.ToAccount)
-                .Where(t => t.FromAccount.UserId == userId || t.ToAccount.UserId == userId)
-                .ToArrayAsync();
-        }
+            // Căutăm conturile după IBAN
+            var fromAccount = await dbContext.Accounts
+                .FirstOrDefaultAsync(a => a.IBAN == dto.FromAccountIBAN);
 
-        public async Task<Transaction[]> GetTransactionsByTypeAsync(TransactionType type)
-        {
-            return await dbContext.Transactions
-                .Where(t => t.Type == type)
-                .Include(t => t.FromAccount)
-                .Include(t => t.ToAccount)
-                .ToArrayAsync();
+            var toAccount = await dbContext.Accounts
+                .FirstOrDefaultAsync(a => a.IBAN == dto.ToAccountIBAN);
+
+            if (fromAccount == null || toAccount == null)
+                return null; // nu se poate crea tranzacția
+
+            var transaction = new Transaction
+            {
+                FromAccountId = fromAccount.AccountId,
+                ToAccountId = toAccount.AccountId,
+                Amount = dto.Amount,
+                Currency = dto.Currency,
+                CreatedAt = DateTime.UtcNow,
+                FromAccount = fromAccount,
+                ToAccount = toAccount
+            };
+
+            await dbContext.Transactions.AddAsync(transaction);
+            await dbContext.SaveChangesAsync();
+
+            return transaction;
         }
     }
 }
