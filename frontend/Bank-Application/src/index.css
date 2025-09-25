@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #4f46e5;
+  --secondary-color: #f43f5e;
+  --border-radius: 8px;
+}
