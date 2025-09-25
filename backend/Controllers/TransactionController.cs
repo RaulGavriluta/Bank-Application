@@ -33,7 +33,7 @@ namespace BankApp.Controllers
                 FromAccountIBAN = transaction.FromAccount?.IBAN ?? "",
                 ToAccountIBAN = transaction.ToAccount?.IBAN ?? "",
                 Amount = transaction.Amount,
-                Currency = transaction.Currency,
+                Currency = "RON",
                 CreatedAt = transaction.CreatedAt
             };
 
@@ -55,7 +55,7 @@ namespace BankApp.Controllers
                 FromAccountIBAN = t.FromAccount?.IBAN ?? "",
                 ToAccountIBAN = t.ToAccount?.IBAN ?? "",
                 Amount = t.Amount,
-                Currency = t.Currency,
+                Currency = "RON",
                 CreatedAt = t.CreatedAt
             }).ToList();
 
@@ -66,25 +66,30 @@ namespace BankApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTransaction(TransactionDTO transactionDto)
         {
-            if (string.IsNullOrEmpty(transactionDto.FromAccountIBAN) || string.IsNullOrEmpty(transactionDto.ToAccountIBAN))
-                return BadRequest("Both FromAccountIBAN and ToAccountIBAN are required.");
-
-            var createdTransaction = await _transactionDataOps.CreateTransactionAsync(transactionDto);
-
-            if (createdTransaction == null)
-                return BadRequest("Could not create transaction. Check IBANs.");
-
-            var dto = new TransactionDTO
+            try
             {
-                TransactionId = createdTransaction.TransactionId,
-                FromAccountIBAN = createdTransaction.FromAccount?.IBAN ?? "",
-                ToAccountIBAN = createdTransaction.ToAccount?.IBAN ?? "",
-                Amount = createdTransaction.Amount,
-                Currency = createdTransaction.Currency,
-                CreatedAt = createdTransaction.CreatedAt
-            };
+                var createdTransaction = await _transactionDataOps.CreateTransactionAsync(transactionDto);
 
-            return CreatedAtAction(nameof(GetTransactionById), new { transactionId = dto.TransactionId }, dto);
+                if (createdTransaction == null)
+                    return BadRequest("Could not create transaction.");
+
+                var dto = new TransactionDTO
+                {
+                    TransactionId = createdTransaction.TransactionId,
+                    FromAccountIBAN = createdTransaction.FromAccount?.IBAN ?? "",
+                    ToAccountIBAN = createdTransaction.ToAccount?.IBAN ?? "",
+                    Amount = createdTransaction.Amount,
+                    Currency = createdTransaction.Currency,
+                    CreatedAt = createdTransaction.CreatedAt
+                };
+
+                return CreatedAtAction(nameof(GetTransactionById), new { transactionId = dto.TransactionId }, dto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
+
     }
 }

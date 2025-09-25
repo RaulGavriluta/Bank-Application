@@ -24,7 +24,7 @@ namespace BankApp.Data
                 .FirstOrDefaultAsync(t => t.TransactionId == id);
         }
 
-        // Returnează toate tranzacțiile asociate unui cont (from sau to)
+        // Returnează toate tranzacțiile asociate unui cont
         public async Task<Transaction[]> GetTransactionByAccountIdAsync(int accountId)
         {
             return await dbContext.Transactions
@@ -45,23 +45,49 @@ namespace BankApp.Data
                 .FirstOrDefaultAsync(a => a.IBAN == dto.ToAccountIBAN);
 
             if (fromAccount == null || toAccount == null)
-                return null; // nu se poate crea tranzacția
-
-            var transaction = new Transaction
             {
-                FromAccountId = fromAccount.AccountId,
-                ToAccountId = toAccount.AccountId,
-                Amount = dto.Amount,
-                Currency = dto.Currency,
-                CreatedAt = DateTime.UtcNow,
-                FromAccount = fromAccount,
-                ToAccount = toAccount
-            };
+                throw new Exception("Please provide both IBAN's");
+            }else if(fromAccount == toAccount)
+            {
+                throw new InvalidOperationException("The account cannot be the same");
+            }
 
-            await dbContext.Transactions.AddAsync(transaction);
-            await dbContext.SaveChangesAsync();
 
-            return transaction;
+            if (fromAccount.Balance < dto.Amount)
+            {
+                throw new InvalidOperationException("Insuficient funds");
+            }
+
+            using var dbTransaction = await dbContext.Database.BeginTransactionAsync();
+
+            try
+            {
+                fromAccount.Balance -= dto.Amount;
+
+                toAccount.Balance += dto.Amount;
+
+                var transaction = new Transaction
+                {
+                    FromAccountId = fromAccount.AccountId,
+                    ToAccountId = toAccount.AccountId,
+                    Amount = dto.Amount,
+                    Currency = dto.Currency,
+                    CreatedAt = DateTime.UtcNow,
+                    FromAccount = fromAccount,
+                    ToAccount = toAccount
+                };
+
+                await dbContext.Transactions.AddAsync(transaction);
+                await dbTransaction.CommitAsync();
+                await dbContext.SaveChangesAsync();
+
+                return transaction;
+            }
+            catch
+            {
+                await dbTransaction.RollbackAsync();
+                throw;
+            }
         }
     }
 }

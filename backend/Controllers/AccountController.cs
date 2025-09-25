@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BankApp.Data;
 using BankApp.DTO;
 using BankApp.Models;
 using BankApp.Interfaces;
@@ -70,7 +69,7 @@ namespace BankApp.Controllers
                 AccountTypeId = dto.AccountTypeId,
                 UserId = dto.BankUserId,
                 IsActive = true,
-                Balance = 0,
+                Balance = dto.Balance,
                 CreatedAt = DateTime.UtcNow
             };
             await _accountDataOps.AddAccountAsync(account);
