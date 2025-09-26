@@ -1,7 +1,7 @@
 import google.generativeai as genai
 
 class Chatbot:
-    def __init__(self, api_key, model_name='models/gemini-1.5-pro'):
+    def __init__(self, api_key, model_name='models/gemini-2.5-pro'):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel(model_name)
 
