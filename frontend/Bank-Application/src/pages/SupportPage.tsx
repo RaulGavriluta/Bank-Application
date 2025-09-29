@@ -28,10 +28,10 @@ const SupportPage = () => {
 
 
   return (
-    <main className="flex p-20 justify-center items-center h-screen">
+    <main className="flex px-30 py-20 justify-center items-center h-screen">
       <div className="shadow-[0_0_20px_rgba(0,0,0,0.2)] w-full h-full max-w-2xl flex flex-col bg-white rounded-lg overflow-hidden">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-4 text-xl font-semibold">
+        <div className="bg-[var(--primary)] text-[var(--secondary)] p-4 text-xl font-semibold">
           Support Chat
         </div>
 
@@ -42,8 +42,8 @@ const SupportPage = () => {
               key={i}
               className={`p-3 rounded-lg max-w-[75%] ${
                 msg.sender === "user"
-                  ? "bg-blue-500 text-white self-end ml-auto"
-                  : "bg-gray-200 text-gray-800 self-start mr-auto"
+                  ? "bg-[var(--primary)] text-[var(--secondary)] self-end ml-auto"
+                  : "bg-[var(--secondary)] text-[var(--primary)] self-start mr-auto"
               }`}
             >
               {msg.text}
@@ -54,15 +54,15 @@ const SupportPage = () => {
         {/* Input + buton */}
         <div className="flex p-4 border-t gap-2">
           <input
-            className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Scrie un mesaj..."
+            placeholder="Pune o intrebare..."
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
           <button
             onClick={sendMessage}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer"
+            className="bg-[var(--primary)] text-[var(--secondary)] font-semibold px-4 py-2 rounded-lg hover:bg-[var(--secondary)] hover:text-[var(--primary)] transition-all duration-300 cursor-pointer"
           >
             Trimite
           </button>

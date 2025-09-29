@@ -4,17 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from chatbot import Chatbot
-from pdf_utils import extract_text_from_pdf, chunk_text, embed_chunks, retrieve_relevant_chunks
+from pdf_utils import load_multiple_pdfs, retrieve_relevant_chunks
 
 # -----------------------
 # Setup FastAPI
 # -----------------------
 app = FastAPI()
 
-# CORS middleware
+# CORS middleware (pentru frontend React)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # URL frontend React
+    allow_origins=["http://localhost:5173"],  # URL-ul aplicației tale frontend
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,7 +26,7 @@ app.add_middleware(
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
-    raise Exception("GEMINI_API_KEY not set in environment variables")
+    raise Exception("❌ GEMINI_API_KEY not set in environment variables")
 
 # -----------------------
 # Initialize chatbot
@@ -34,15 +34,14 @@ if not api_key:
 chatbot = Chatbot(api_key, model_name="models/gemini-2.5-flash")
 
 # -----------------------
-# Load PDF and prepare embeddings
+# Load multiple PDFs
 # -----------------------
-pdf_path = "raiffeisen-brosura.pdf"
-if not os.path.exists(pdf_path):
-    raise FileNotFoundError(f"PDF file '{pdf_path}' not found.")
+pdf_paths = [
+    "raiffeisen-brosura.pdf",
+    "tarife.pdf",
+]
 
-pdf_content = extract_text_from_pdf(pdf_path)
-chunks = chunk_text(pdf_content, chunk_size=500)
-chunk_embeddings = embed_chunks(chunks)
+chunks, chunk_embeddings, sources = load_multiple_pdfs(pdf_paths)
 
 # -----------------------
 # Request / Response models
@@ -60,21 +59,31 @@ class ChatResponse(BaseModel):
 async def chat_endpoint(request: ChatRequest):
     user_question = request.question.strip()
     if not user_question:
-        return {"answer": "Please provide a question."}
+        return {"answer": "Te rog să scrii o întrebare legată de produsele sau serviciile bancare."}
 
     relevant_chunks = retrieve_relevant_chunks(user_question, chunks, chunk_embeddings, top_k=5)
     context = "\n\n".join(relevant_chunks)
 
-    # Prompt simplu pentru RAG
+    # Prompt îmbunătățit în română
     prompt = f"""
-Esti un asistent virtual prietenos si de ajutor pentru un client care are intrebari despre serviciile bancare. Raspunde la intrebari cat mai clar si prietenos. Afiseaza raspunsurile intr-un mod concis si usor de inteles.Nu oferi raspunsuri prea lungi.Nu saluta de mai multe ori pe parcursul conversatiei, doar o data, la inceput. Raspunde la intrebari folosind urmatorul context:
+Ești un asistent virtual prietenos al unei bănci. 
+Răspunzi la întrebările clienților folosind strict informațiile din documentele oficiale puse la dispoziție (broșuri, tarife, contracte).  
+
+Instrucțiuni:  
+- Fii clar și prietenos.  
+- Explică pe scurt și pe înțelesul clientului.  
+- Nu inventa informații, răspunde doar dacă există în context.  
+- Dacă nu găsești răspunsul în documente, spune politicos că informația nu este disponibilă.  
+- Evită răspunsurile prea lungi.  
+
 Context:
 {context}
 
-Question:
+Întrebare client:
 {user_question}
 
-Answer:
+Răspuns:
 """
+
     answer = chatbot.send_message(prompt)
     return {"answer": answer}
