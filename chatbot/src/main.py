@@ -23,7 +23,7 @@ if not api_key:
 
 chatbot = Chatbot(api_key, model_name="models/gemini-2.5-flash")
 
-pdf_files = ["raiffeisen-brosura.pdf", "Tarife.pdf", "Termeni-legali.pdf"]  
+pdf_files = ["raiffeisen-brosura.pdf", "Tarife.pdf", "Termeni-legali.pdf", "Politica_Cookie.pdf"]  
 vectorstore, documents = load_pdfs(pdf_files)
 
 class ChatRequest(BaseModel):

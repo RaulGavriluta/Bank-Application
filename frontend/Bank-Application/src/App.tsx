@@ -4,6 +4,7 @@ import AccountPage from './pages/AccountPage.tsx'
 import SupportPage from './pages/SupportPage.tsx'
 import Nav from './components/Nav.tsx'
 import './App.css'
+import Footer from './components/Footer.tsx'
 
 function App() {
   return(
@@ -11,10 +12,12 @@ function App() {
       <Nav />
 
       <Routes>
-        <Route path="/home" element={<HomePage />}></Route>
+        <Route path="/" element={<HomePage />}></Route>
         <Route path="/account" element={<AccountPage />}></Route>
         <Route path="/support" element={<SupportPage />}></Route>
       </Routes>
+
+      <Footer />
     </div>
   )
 }
